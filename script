@@ -1,0 +1,2 @@
+ x86_64-w64-mingw32-objdump -p prog.exe | grep 'lib' | grep dll | sed -e "s/\t*DLL Name: //g
+
