@@ -1,37 +1,23 @@
-CXX = clang++
-CXXFLAGS = -std=c++20 -Wall -O2 #make -j4
-LDFLAGS = -Wl,-rpath,$(LD_DIR)
+CXX = x86_64-w64-mingw32-g++
+CXXFLAGS = -std=c++20 -Wall -Wextra -O2
+CXXOPTION = -static-libgcc -static-libstdc++
+LDFLAGS = -lpthread
 
-BUILD = ./build
-BINDIR = ./bin
-INCLUDE = $(HOME)/include/
-LD_DIR = $(HOME)/lib/
-
+BUILD = build
 SOURCE = main
-TARGET = eval
-SHARED = eval
+TARGET = crossx86
+CROSS = /usr/x86_64-w64-mingw32/bin
 
-COMPILE = $(CXX) $(CXXFLAGS) -I$(INCLUDE) -L$(LD_DIR) -l$(SHARED) $(LDFLAGS)
+COMPILE = $(CXX)
 
-all: $(SOURCE).o
-	$(COMPILE) $(BUILD)/$(SOURCE).o -o $(BUILD)/$(TARGET)
-
-$(SOURCE).o: $(SOURCE).s
-	$(COMPILE) $(BUILD)/$(SOURCE).s -c -o $(BUILD)/$(SOURCE).o
-
-$(SOURCE).s: $(SOURCE).i
-	$(COMPILE) $(BUILD)/$(SOURCE).i -S -o $(BUILD)/$(SOURCE).s
-
-$(SOURCE).i:
-	mkdir -p $(BUILD) $(LD_DIR)
-	$(COMPILE) $(SOURCE).cpp -E -o $(BUILD)/$(SOURCE).i
-
+all: 
+	mkdir -p $(BUILD)
+	$(COMPILE) $(SOURCE).cpp -o $(BUILD)/$(TARGET)
 
 .PHONY: all clean
 
 clean:
 	rm -rf $(BUILD)/*.*
 
-install :
-	mkdir -p $(BINDIR)
-	cp $(BUILD)/$(TARGET) $(BINDIR)/
+install:
+	cp $(CROSS)/{libstdc++-6.dll, libwinpthread-1.dll, libgcc_s_seh-1 } $(BUILD)/
